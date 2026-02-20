@@ -5,7 +5,7 @@
 - [x] Task: Optimize memory allocation in ofiq_bridge.cpp. [889be64]
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Core Bridge Optimization' (Protocol in workflow.md)
 
-## Phase 2: API Extension
+## Phase 2: API Extension [checkpoint: 5b41c48]
 - [x] Task: Update NativeInvoke.cs with new quality measure enums. [889be64]
 - [x] Task: Implement new wrappers in ofiq_bridge.cpp for detailed metrics. [e95849c]
 - [x] Task: Write unit tests for the extended API. [91009a5]
