@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/OFIQConsoleApp.Tests/bin/Debug/net10.0
+/OFIQConsoleApp.Tests/obj
+/.vs/IKAO-Images/FileContentIndex
