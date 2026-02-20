@@ -64,11 +64,24 @@ extern "C" {
         int16_t height;
     } BridgeBoundingBox;
 
-    BridgeReturnStatus ofiq_vector_quality(
+    typedef struct {
+        int16_t x;
+        int16_t y;
+    } BridgeLandmark;
+
+    typedef struct {
+        int landmarkCount;
+        BridgeLandmark* landmarks;
+        uint8_t* segmentationMask; // WH bytes
+        uint8_t* occlusionMask;    // WH bytes
+    } BridgePreprocessingResult;
+
+    BridgeReturnStatus ofiq_vector_quality_with_preprocessing(
         OFIQInterface handle, 
         uint16_t width, uint16_t height, uint8_t depth, uint8_t* data, 
         BridgeAssessment* results, int* count,
-        BridgeBoundingBox* bbox) 
+        BridgeBoundingBox* bbox,
+        BridgePreprocessingResult* preproc) 
     {
         auto impl = *static_cast<std::shared_ptr<OFIQ::Interface>*>(handle);
         
@@ -76,13 +89,15 @@ extern "C" {
         image.width = width;
         image.height = height;
         image.depth = depth;
-        
-        // Use custom deleter that does nothing since we don't own the memory
-        // and vectorQuality is a synchronous call.
         image.data.reset(data, [](uint8_t*){});
 
         OFIQ::FaceImageQualityAssessment assessments;
-        auto status = impl->vectorQuality(image, assessments);
+        OFIQ::FaceImageQualityPreprocessingResult preprocessingResult;
+        
+        // Request all available preprocessing results
+        uint32_t mask = 0x1 | 0x2 | 0x4 | 0x8 | 0x10; // All
+
+        auto status = impl->vectorQualityWithPreprocessingResults(image, assessments, preprocessingResult, mask);
 
         if (status.code == OFIQ::ReturnCode::Success) {
             // Fill Bounding Box
@@ -101,6 +116,25 @@ extern "C" {
                 i++;
             }
             *count = i;
+
+            // Fill Landmarks
+            if (preproc->landmarks) {
+                int lmCount = std::min((int)preprocessingResult.m_landmarks.landmarks.size(), preproc->landmarkCount);
+                for (int j = 0; j < lmCount; j++) {
+                    preproc->landmarks[j].x = preprocessingResult.m_landmarks.landmarks[j].x;
+                    preproc->landmarks[j].y = preprocessingResult.m_landmarks.landmarks[j].y;
+                }
+                preproc->landmarkCount = lmCount;
+            }
+
+            // Copy masks if pointers provided
+            size_t maskSize = (size_t)width * height;
+            if (preproc->segmentationMask && preprocessingResult.m_segmentationMaskPtr) {
+                memcpy(preproc->segmentationMask, preprocessingResult.m_segmentationMaskPtr.get(), maskSize);
+            }
+            if (preproc->occlusionMask && preprocessingResult.m_occlusionMaskPtr) {
+                memcpy(preproc->occlusionMask, preprocessingResult.m_occlusionMaskPtr.get(), maskSize);
+            }
         }
 
         BridgeReturnStatus bridgeStatus;
