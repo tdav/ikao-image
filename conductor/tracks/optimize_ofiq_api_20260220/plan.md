@@ -6,11 +6,11 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Core Bridge Optimization' (Protocol in workflow.md)
 
 ## Phase 2: API Extension
-- [ ] Task: Update NativeInvoke.cs with new quality measure enums.
-- [ ] Task: Implement new wrappers in ofiq_bridge.cpp for detailed metrics.
-- [ ] Task: Write unit tests for the extended API.
-    - [ ] Write Tests
-    - [ ] Implement Feature
+- [x] Task: Update NativeInvoke.cs with new quality measure enums. [889be64]
+- [x] Task: Implement new wrappers in ofiq_bridge.cpp for detailed metrics. [e95849c]
+- [x] Task: Write unit tests for the extended API. [91009a5]
+    - [x] Write Tests [91009a5]
+    - [x] Implement Feature [e95849c]
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: API Extension' (Protocol in workflow.md)
 
 ## Phase 3: Validation and Quality Assurance
