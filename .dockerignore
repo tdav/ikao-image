@@ -1,0 +1,16 @@
+**/.git
+**/.vs
+**/bin
+**/obj
+OFIQConsoleApp/
+OFIQ.RestApi/
+OFIQ.RestApi.Tests/
+OFIQConsoleApp.Tests/
+conductor/
+README.md
+GEMINI.md
+OFIQSampleApp.cpp
+ofiq_bridge.cpp
+ofiq_lib.h
+ofiq_structs.h
+setup.sh
