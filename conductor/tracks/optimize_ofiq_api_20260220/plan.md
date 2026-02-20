@@ -14,6 +14,6 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: API Extension' (Protocol in workflow.md)
 
 ## Phase 3: Validation and Quality Assurance
-- [ ] Task: Run performance benchmarks on optimized code.
-- [ ] Task: Verify test coverage is > 80%.
+- [x] Task: Run performance benchmarks on optimized code. [d05176d]
+- [x] Task: Verify test coverage is > 80%. [dd74505]
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Validation and Quality Assurance' (Protocol in workflow.md)
