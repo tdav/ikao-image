@@ -63,35 +63,60 @@ namespace OFIQ.RestApi.Services
         public async Task<(NativeInvoke.BridgeAssessment[] assessments, NativeInvoke.BridgeBoundingBox bbox, NativeInvoke.BridgeLandmark[] landmarks)> GetPreprocessingResultsAsync(Stream imageStream)
         {
             using var image = await Image.LoadAsync<Bgr24>(imageStream);
-            if (!image.DangerousTryGetSinglePixelMemory(out var memory))
-            {
-                throw new Exception("Could not get direct memory access to image pixels.");
-            }
-
+            
             var results = new NativeInvoke.BridgeAssessment[100];
             int count;
             NativeInvoke.BridgeBoundingBox bbox;
             int maxLandmarks = 100;
             var landmarks = new NativeInvoke.BridgeLandmark[maxLandmarks];
-
             NativeInvoke.BridgeReturnStatus status;
-            using (var handlePin = memory.Pin())
+
+            if (image.DangerousTryGetSinglePixelMemory(out var memory))
             {
+                using (var handlePin = memory.Pin())
+                {
+                    unsafe
+                    {
+                        var preproc = new NativeInvoke.BridgePreprocessingResult
+                        {
+                            LandmarkCount = maxLandmarks,
+                            Landmarks = (IntPtr)Unsafe.AsPointer(ref landmarks[0]),
+                            SegmentationMask = IntPtr.Zero,
+                            OcclusionMask = IntPtr.Zero
+                        };
+
+                        status = NativeInvoke.ofiq_vector_quality_with_preprocessing(
+                            handle, (ushort)image.Width, (ushort)image.Height, 24, 
+                            (IntPtr)handlePin.Pointer, results, out count, out bbox, ref preproc);
+                        
+                        maxLandmarks = preproc.LandmarkCount;
+                    }
+                }
+            }
+            else
+            {
+                // Fallback: Copy to contiguous buffer
+                byte[] pixelData = new byte[image.Width * image.Height * 3];
+                image.CopyPixelDataTo(pixelData);
+                
                 unsafe
                 {
-                    var preproc = new NativeInvoke.BridgePreprocessingResult
+                    fixed (byte* pPixels = pixelData)
                     {
-                        LandmarkCount = maxLandmarks,
-                        Landmarks = (IntPtr)Unsafe.AsPointer(ref landmarks[0]),
-                        SegmentationMask = IntPtr.Zero,
-                        OcclusionMask = IntPtr.Zero
-                    };
+                        var preproc = new NativeInvoke.BridgePreprocessingResult
+                        {
+                            LandmarkCount = maxLandmarks,
+                            Landmarks = (IntPtr)Unsafe.AsPointer(ref landmarks[0]),
+                            SegmentationMask = IntPtr.Zero,
+                            OcclusionMask = IntPtr.Zero
+                        };
 
-                    status = NativeInvoke.ofiq_vector_quality_with_preprocessing(
-                        handle, (ushort)image.Width, (ushort)image.Height, 24, 
-                        (IntPtr)handlePin.Pointer, results, out count, out bbox, ref preproc);
-                    
-                    maxLandmarks = preproc.LandmarkCount;
+                        status = NativeInvoke.ofiq_vector_quality_with_preprocessing(
+                            handle, (ushort)image.Width, (ushort)image.Height, 24, 
+                            (IntPtr)pPixels, results, out count, out bbox, ref preproc);
+                        
+                        maxLandmarks = preproc.LandmarkCount;
+                    }
                 }
             }
 
@@ -109,21 +134,34 @@ namespace OFIQ.RestApi.Services
         private async Task<(NativeInvoke.BridgeAssessment[] assessments, NativeInvoke.BridgeBoundingBox bbox)> GetVectorQualityInternalAsync(Stream imageStream, bool includePreproc)
         {
             using var image = await Image.LoadAsync<Bgr24>(imageStream);
-            if (!image.DangerousTryGetSinglePixelMemory(out var memory))
-            {
-                throw new Exception("Could not get direct memory access to image pixels.");
-            }
-
+            
             var results = new NativeInvoke.BridgeAssessment[100];
             int count;
             NativeInvoke.BridgeBoundingBox bbox;
-
             NativeInvoke.BridgeReturnStatus status;
-            using (var handlePin = memory.Pin())
+
+            if (image.DangerousTryGetSinglePixelMemory(out var memory))
             {
+                using (var handlePin = memory.Pin())
+                {
+                    unsafe
+                    {
+                        status = NativeInvoke.ofiq_vector_quality(handle, (ushort)image.Width, (ushort)image.Height, 24, (IntPtr)handlePin.Pointer, results, out count, out bbox);
+                    }
+                }
+            }
+            else
+            {
+                // Fallback: Copy to contiguous buffer
+                byte[] pixelData = new byte[image.Width * image.Height * 3];
+                image.CopyPixelDataTo(pixelData);
+                
                 unsafe
                 {
-                    status = NativeInvoke.ofiq_vector_quality(handle, (ushort)image.Width, (ushort)image.Height, 24, (IntPtr)handlePin.Pointer, results, out count, out bbox);
+                    fixed (byte* pPixels = pixelData)
+                    {
+                        status = NativeInvoke.ofiq_vector_quality(handle, (ushort)image.Width, (ushort)image.Height, 24, (IntPtr)pPixels, results, out count, out bbox);
+                    }
                 }
             }
 
