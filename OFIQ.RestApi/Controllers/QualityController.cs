@@ -64,5 +64,38 @@ namespace OFIQ.RestApi.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPost("preprocessing")]
+        public async Task<IActionResult> GetPreprocessingResults(IFormFile file)
+        {
+            if (file == null || file.Length == 0) return BadRequest("No file uploaded.");
+
+            try
+            {
+                using var stream = file.OpenReadStream();
+                var (assessments, bbox, landmarks) = await _ofiqService.GetPreprocessingResultsAsync(stream);
+
+                var response = new PreprocessingQualityResponse
+                {
+                    BoundingBox = new BoundingBoxDto { X = bbox.X, Y = bbox.Y, Width = bbox.Width, Height = bbox.Height },
+                    Assessments = assessments.Select(a => new AssessmentResultDto
+                    {
+                        MeasureName = Enum.IsDefined(typeof(NativeInvoke.QualityMeasure), a.Measure)
+                            ? ((NativeInvoke.QualityMeasure)a.Measure).ToString()
+                            : $"Unknown(0x{a.Measure:X})",
+                        RawScore = a.RawScore,
+                        ScalarScore = a.Scalar,
+                        Code = a.Code
+                    }).ToList(),
+                    Landmarks = landmarks.Select(l => new LandmarkDto { X = l.X, Y = l.Y }).ToList()
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

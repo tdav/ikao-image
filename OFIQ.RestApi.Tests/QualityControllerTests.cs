@@ -78,5 +78,34 @@ namespace OFIQ.RestApi.Tests
             Assert.Single(response.Assessments);
             Assert.Equal("UnifiedQualityScore", response.Assessments[0].MeasureName);
         }
+
+        [Fact]
+        public async Task GetPreprocessingResults_ReturnsOkWithLandmarks()
+        {
+            // Arrange
+            var fileMock = new Mock<IFormFile>();
+            var ms = new MemoryStream();
+            fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
+            fileMock.Setup(_ => _.Length).Returns(1);
+
+            var mockAssessments = new ikao.NativeInvoke.BridgeAssessment[] { };
+            var mockBbox = new ikao.NativeInvoke.BridgeBoundingBox { };
+            var mockLandmarks = new ikao.NativeInvoke.BridgeLandmark[]
+            {
+                new() { X = 100, Y = 200 }
+            };
+
+            _ofiqServiceMock.Setup(s => s.GetPreprocessingResultsAsync(It.IsAny<Stream>()))
+                .ReturnsAsync((mockAssessments, mockBbox, mockLandmarks));
+
+            // Act
+            var result = await _controller.GetPreprocessingResults(fileMock.Object);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var response = Assert.IsType<PreprocessingQualityResponse>(okResult.Value);
+            Assert.Single(response.Landmarks);
+            Assert.Equal(100, response.Landmarks[0].X);
+        }
     }
 }
