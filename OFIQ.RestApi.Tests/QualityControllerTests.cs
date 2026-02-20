@@ -49,5 +49,34 @@ namespace OFIQ.RestApi.Tests
             var response = Assert.IsType<ScalarQualityResponse>(okResult.Value);
             Assert.Equal(85.5, response.ScalarQuality);
         }
+
+        [Fact]
+        public async Task GetVectorQuality_ReturnsOkWithVectorData()
+        {
+            // Arrange
+            var fileMock = new Mock<IFormFile>();
+            var ms = new MemoryStream();
+            fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
+            fileMock.Setup(_ => _.Length).Returns(1);
+
+            var mockAssessments = new ikao.NativeInvoke.BridgeAssessment[]
+            {
+                new() { Measure = (int)ikao.NativeInvoke.QualityMeasure.UnifiedQualityScore, Scalar = 80.0, RawScore = 0.8 }
+            };
+            var mockBbox = new ikao.NativeInvoke.BridgeBoundingBox { X = 10, Y = 20, Width = 100, Height = 100 };
+
+            _ofiqServiceMock.Setup(s => s.GetVectorQualityAsync(It.IsAny<Stream>()))
+                .ReturnsAsync((mockAssessments, mockBbox));
+
+            // Act
+            var result = await _controller.GetVectorQuality(fileMock.Object);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var response = Assert.IsType<VectorQualityResponse>(okResult.Value);
+            Assert.Equal(10, response.BoundingBox.X);
+            Assert.Single(response.Assessments);
+            Assert.Equal("UnifiedQualityScore", response.Assessments[0].MeasureName);
+        }
     }
 }
