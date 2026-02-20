@@ -1,7 +1,7 @@
 ﻿# Implementation Plan: Optimization of OFIQ API
 
 ## Phase 1: Core Bridge Optimization
-- [ ] Task: Profiling existing image transfer between ImageSharp and C++ Bridge.
+- [x] Task: Profiling existing image transfer between ImageSharp and C++ Bridge. [47a1a17]
 - [ ] Task: Optimize memory allocation in ofiq_bridge.cpp.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Core Bridge Optimization' (Protocol in workflow.md)
 
