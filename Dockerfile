@@ -3,9 +3,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 
 # Install native dependencies required by OFIQ and ONNX Runtime
 # libgomp1 is usually required for OpenMP
-RUN apt-get update && apt-get install -y 
-    libgomp1 
-    && rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && apt-get install -y 
+#    libgomp1 
+#    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ COPY dist/api/ .
 COPY dist/config/ .
 
 # Ensure native libraries are in the search path
-ENV LD_LIBRARY_PATH="/app:${LD_LIBRARY_PATH}"
+#ENV LD_LIBRARY_PATH="/app:${LD_LIBRARY_PATH}"
 
 # Expose the port the API is listening on (default is 8080 for .NET 8+)
 EXPOSE 8080

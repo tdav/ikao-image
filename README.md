@@ -81,4 +81,3 @@ docker run -p 8080:8080 tdav/ofiq-api:latest
 
 ---
 
-*Developed as an integration layer for the German Federal Office for Information Security (BSI) OFIQ reference implementation.*
