@@ -3,5 +3,3 @@
 This file tracks all major tracks for the project. Each track has its own detailed plan in its respective folder.
 
 ---
-- [x] **Track: Optimization of image processing and API extension**
-  *Link: [./tracks/optimize_ofiq_api_20260220/](./tracks/optimize_ofiq_api_20260220/)*
