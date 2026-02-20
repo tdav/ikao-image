@@ -4,6 +4,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 ---
-
-- [x] **Track: Unified Setup and Deployment Script**
-  *Link: [./tracks/unified_setup_script_20260220/](./tracks/unified_setup_script_20260220/)*

@@ -1,0 +1,8 @@
+﻿{
+"track_id": "unified_setup_script_20260220",
+"type": "chore",
+"status": "new",
+"created_at": "2026-02-20T23:11:28Z",
+"updated_at": "2026-02-20T23:11:28Z",
+"description": "Update setup.sh to automate the build and deployment of all project components (Console, SDK, REST API) into a unified dist directory."
+}
