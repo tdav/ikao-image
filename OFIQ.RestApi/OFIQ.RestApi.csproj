@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ikao\ikao.csproj" />
+    <ProjectReference Include="..\icao\icao.csproj" />
   </ItemGroup>
 
 </Project>

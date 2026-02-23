@@ -8,7 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IKAO-Images", "OFIQConsoleApp\IKAO-Images.csproj", "{BDD6FEDB-6319-43FA-A879-E6BB6253F21E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "icao-images", "OFIQConsoleApp\icao-images.csproj", "{BDD6FEDB-6319-43FA-A879-E6BB6253F21E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OFIQConsoleApp.Tests", "OFIQConsoleApp.Tests\OFIQConsoleApp.Tests.csproj", "{FD83FF00-690E-4970-8CE6-7E205761B211}"
 EndProject
@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OFIQ.RestApi", "OFIQ.RestAp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OFIQ.RestApi.Tests", "OFIQ.RestApi.Tests\OFIQ.RestApi.Tests.csproj", "{F4C35D2F-7D57-4062-865D-BFA3F6FAD48F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ikao", "ikao\ikao.csproj", "{6F50B3BA-5B84-4071-97E7-1111D428B467}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "icao", "icao\icao.csproj", "{6F50B3BA-5B84-4071-97E7-1111D428B467}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D02A41EA-4A9E-4DCE-B9A4-351D89987992}"
 EndProject
