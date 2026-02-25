@@ -70,6 +70,8 @@ The API will be available at `http://localhost:5000` (or the configured port). D
 ### 3. REST API (Docker)
 ```bash
 docker run -p 8080:8080 tdav/ofiq-api:latest
+
+docker run -d --restart=always --name icao-image -p 8080:8080 tdav/ofiq-api:latest
 ```
 
 ---
